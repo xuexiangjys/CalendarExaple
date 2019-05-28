@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codbking.calendar.CaledarAdapter;
 import com.codbking.calendar.CalendarDate;
@@ -64,10 +65,10 @@ public class CustomActivity extends AppCompatActivity {
             }
         });
 
-        mCalendarDateView.setOnItemClickListener(new CalendarView.OnItemClickListener() {
+        mCalendarDateView.setOnCalendarSelectedListener(new CalendarView.OnCalendarSelectedListener() {
             @Override
-            public void onItemClick(View view, int postion, CalendarDate calendarDate) {
-                mTitle.setText(calendarDate.year + "/" + getDisPlayNumber(calendarDate.month) + "/" + getDisPlayNumber(calendarDate.day));
+            public void onCalendarSelected(View view, int postion, CalendarDate calendarDate) {
+                Toast.makeText(CustomActivity.this, "选中:" + calendarDate.formatDate(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -83,12 +84,16 @@ public class CustomActivity extends AppCompatActivity {
             }
         });
 
-        int[] data = CalendarUtils.getYMD(new Date());
-        mTitle.setText(data[0] + "/" + data[1] + "/" + data[2]);
-    }
+        mCalendarDateView.setOnMonthChangedListener(new CalendarDateView.OnMonthChangedListener() {
+            @Override
+            public void onMonthChanged(View view, int postion, CalendarDate date) {
+                mTitle.setText(String.format("%d年%d月", date.year, date.month));
 
-    private String getDisPlayNumber(int num) {
-        return num < 10 ? "0" + num : "" + num;
+            }
+        });
+
+        CalendarDate date = CalendarDate.get(new Date());
+        mTitle.setText(String.format("%d年%d月", date.year, date.month));
     }
 
     @OnClick({R.id.previous, R.id.next})

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="CalendarDateView">
+        <!--日历的行数， 默认是5-->
+        <attr name="cdv_row" format="integer"/>
+        <!--日历每月的第一天是否默认选中， 默认是true-->
+        <attr name="cdv_selectFirstDayOfMonth" format="boolean"/>
+    </declare-styleable>
+
+</resources>

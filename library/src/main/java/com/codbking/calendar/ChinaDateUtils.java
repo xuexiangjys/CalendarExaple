@@ -86,11 +86,12 @@ public final class ChinaDateUtils {
      * @param y
      * @return
      */
-    final private static int lYearDays(int y) {
+    private static int lYearDays(int y) {
         int i, sum = 348;
         for (i = 0x8000; i > 0x8; i >>= 1) {
-            if ((lunarInfo[y - 1900] & i) != 0)
+            if ((lunarInfo[y - 1900] & i) != 0) {
                 sum += 1;
+            }
         }
         return (sum + leapDays(y));
     }
@@ -102,14 +103,16 @@ public final class ChinaDateUtils {
      * @param y
      * @return
      */
-    final private static int leapDays(int y) {
+    private static int leapDays(int y) {
         if (leapMonth(y) != 0) {
-            if ((lunarInfo[y - 1900] & 0x10000) != 0)
+            if ((lunarInfo[y - 1900] & 0x10000) != 0) {
                 return 30;
-            else
+            } else {
                 return 29;
-        } else
+            }
+        } else {
             return 0;
+        }
     }
 
 
@@ -132,10 +135,11 @@ public final class ChinaDateUtils {
      * @return
      */
     final private static int monthDays(int y, int m) {
-        if ((lunarInfo[y - 1900] & (0x10000 >> m)) == 0)
+        if ((lunarInfo[y - 1900] & (0x10000 >> m)) == 0) {
             return 29;
-        else
+        } else {
             return 30;
+        }
     }
 
 
@@ -186,12 +190,13 @@ public final class ChinaDateUtils {
         Date baseDate = new GregorianCalendar(1900 + 1900, 1, 31).getTime();
         Date objDate = new GregorianCalendar(y + 1900, m, 1).getTime();
         long offset = (objDate.getTime() - baseDate.getTime()) / 86400000L;
-        if (y < 2000)
+        if (y < 2000) {
             offset += year19[m - 1];
-        if (y > 2000)
+        } else if (y > 2000) {
             offset += year20[m - 1];
-        if (y == 2000)
+        } else {
             offset += year2000[m - 1];
+        }
         nongDate[5] = offset + 40;
         nongDate[4] = 14;
         for (i = 1900; i < 2050 && offset > 0; i++) {
@@ -218,11 +223,13 @@ public final class ChinaDateUtils {
                 temp = monthDays((int) nongDate[0], i);
             }
             // 解除闰月
-            if (nongDate[6] == 1 && i == (leap + 1))
+            if (nongDate[6] == 1 && i == (leap + 1)) {
                 nongDate[6] = 0;
+            }
             offset -= temp;
-            if (nongDate[6] == 0)
+            if (nongDate[6] == 0) {
                 nongDate[4]++;
+            }
         }
         if (offset == 0 && leap > 0 && i == leap + 1) {
             if (nongDate[6] == 1) {
@@ -252,7 +259,7 @@ public final class ChinaDateUtils {
      * @param d
      * @return
      */
-    final public static long[] calElement(int y, int m, int d) {
+    private static long[] calElement(int y, int m, int d) {
         long[] nongDate = new long[7];
         int i = 0, temp = 0, leap = 0;
         Date baseDate = new GregorianCalendar(0 + 1900, 0, 31).getTime();
@@ -272,7 +279,8 @@ public final class ChinaDateUtils {
         }
         nongDate[0] = i;
         nongDate[3] = i - 1864;
-        leap = leapMonth(i); // 闰哪个月
+        // 闰哪个月
+        leap = leapMonth(i);
         nongDate[6] = 0;
         for (i = 1; i < 13 && offset > 0; i++) {
             // 闰月
@@ -284,11 +292,13 @@ public final class ChinaDateUtils {
                 temp = monthDays((int) nongDate[0], i);
             }
             // 解除闰月
-            if (nongDate[6] == 1 && i == (leap + 1))
+            if (nongDate[6] == 1 && i == (leap + 1)) {
                 nongDate[6] = 0;
+            }
             offset -= temp;
-            if (nongDate[6] == 0)
+            if (nongDate[6] == 0) {
                 nongDate[4]++;
+            }
         }
         if (offset == 0 && leap > 0 && i == leap + 1) {
             if (nongDate[6] == 1) {
@@ -312,22 +322,24 @@ public final class ChinaDateUtils {
 
     public final static String getChinaDate(int day) {
         String a = "";
-        if (day == 10)
+        if (day == 10) {
             return "初十";
-        if (day == 20)
+        } else if (day == 20) {
             return "二十";
-        if (day == 30)
+        } else if (day == 30) {
             return "三十";
-        int two = (int) ((day) / 10);
-        if (two == 0)
+        }
+        int two = ((day) / 10);
+        if (two == 0) {
             a = "初";
-        if (two == 1)
+        } else if (two == 1) {
             a = "十";
-        if (two == 2)
+        } else if (two == 2) {
             a = "廿";
-        if (two == 3)
+        } else if (two == 3) {
             a = "三";
-        int one = (int) (day % 10);
+        }
+        int one = (day % 10);
         switch (one) {
             case 1:
                 a += "一";
@@ -355,6 +367,8 @@ public final class ChinaDateUtils {
                 break;
             case 9:
                 a += "九";
+                break;
+            default:
                 break;
         }
         return a;

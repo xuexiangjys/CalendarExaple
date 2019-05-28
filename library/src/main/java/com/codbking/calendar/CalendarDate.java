@@ -2,6 +2,7 @@ package com.codbking.calendar;
 
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -13,17 +14,45 @@ import java.util.Date;
  */
 public class CalendarDate {
 
+    /**
+     * 年
+     */
     public int year;
+    /**
+     * 月
+     */
     public int month;
+    /**
+     * 日
+     */
     public int day;
+    /**
+     * 周
+     */
     public int week;
 
     //-1,0,1
+    /**
+     * 月份flag
+     */
     public int monthFlag;
 
-    //显示
+    /**
+     * 农历的月
+     */
     public String chinaMonth;
+    /**
+     * 农历的日
+     */
     public String chinaDay;
+
+    public static CalendarDate get(Date date) {
+        return CalendarFactory.getCalendarDate(date);
+    }
+
+    public static CalendarDate get(int year, int month, int day) {
+        return CalendarFactory.getCalendarDate(year, month, day);
+    }
 
     public CalendarDate(int year, int month, int day) {
         this.year = year;
@@ -83,6 +112,8 @@ public class CalendarDate {
             case 7:
                 s = "星期六";
                 break;
+            default:
+                break;
 
         }
         return s;
@@ -106,6 +137,15 @@ public class CalendarDate {
      */
     public String formatDate(final DateFormat format) {
         return CalendarUtils.date2String(toDate(), format);
+    }
+
+    /**
+     * 获取格式化的日期
+     *
+     * @return
+     */
+    public String formatDate() {
+        return CalendarUtils.date2String(toDate(), new SimpleDateFormat("yyyy-MM-dd"));
     }
 
     /**

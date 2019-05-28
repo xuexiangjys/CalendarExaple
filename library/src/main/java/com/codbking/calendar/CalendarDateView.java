@@ -19,16 +19,18 @@ import static com.codbking.calendar.CalendarFactory.getMonthOfDayList;
  * @since 2019/5/28 14:18
  */
 public class CalendarDateView extends ViewPager implements CalendarTopView {
-    private final static int DEFAULT_MAX_ROW_COUNT = 5;
+    private final static int DEFAULT_MAX_ROW_COUNT = 6;
 
     private SparseArray<CalendarView> mViews = new SparseArray<>();
     private CaledarTopViewChangeListener mCaledarLayoutChangeListener;
-    private CalendarView.OnItemClickListener mOnItemClickListener;
+    private CalendarView.OnCalendarSelectedListener mOnCalendarSelectedListener;
     private CalendarView.OnTodaySelectStatusChangedListener mOnTodaySelectStatusChangedListener;
+    private OnMonthChangedListener mOnMonthChangedListener;
 
     private LinkedList<CalendarView> mCache = new LinkedList<>();
     private PagerAdapter mPagerAdapter;
     private int mRow;
+    private boolean mIsSelectFirstDayOfMonth;
 
     private CaledarAdapter mAdapter;
     private int mCalendarItemHeight = 0;
@@ -38,8 +40,8 @@ public class CalendarDateView extends ViewPager implements CalendarTopView {
         initData();
     }
 
-    public CalendarDateView setOnItemClickListener(CalendarView.OnItemClickListener onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
+    public CalendarDateView setOnCalendarSelectedListener(CalendarView.OnCalendarSelectedListener onCalendarSelectedListener) {
+        mOnCalendarSelectedListener = onCalendarSelectedListener;
         return this;
     }
 
@@ -48,12 +50,22 @@ public class CalendarDateView extends ViewPager implements CalendarTopView {
         return this;
     }
 
+    public CalendarDateView setOnMonthChangedListener(OnMonthChangedListener onMonthChangedListener) {
+        mOnMonthChangedListener = onMonthChangedListener;
+        return this;
+    }
+
     public CalendarDateView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CalendarDateView);
-        mRow = a.getInteger(R.styleable.CalendarDateView_cbd_calendar_row, DEFAULT_MAX_ROW_COUNT);
-        a.recycle();
+        initAttrs(context, attrs);
         init();
+    }
+
+    private void initAttrs(Context context, AttributeSet attrs) {
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CalendarDateView);
+        mRow = typedArray.getInteger(R.styleable.CalendarDateView_cdv_row, DEFAULT_MAX_ROW_COUNT);
+        mIsSelectFirstDayOfMonth = typedArray.getBoolean(R.styleable.CalendarDateView_cdv_selectFirstDayOfMonth, true);
+        typedArray.recycle();
     }
 
     @Override
@@ -96,11 +108,11 @@ public class CalendarDateView extends ViewPager implements CalendarTopView {
                     view = new CalendarView(container.getContext(), mRow);
                 }
 
-                view.setOnItemClickListener(mOnItemClickListener);
+                view.setOnCalendarSelectedListener(mOnCalendarSelectedListener);
                 view.setOnTodaySelectStatusChangedListener(mOnTodaySelectStatusChangedListener);
                 view.setAdapter(mAdapter);
 
-                view.setData(getMonthOfDayList(dateArr[0], dateArr[1] + position - Integer.MAX_VALUE / 2), position == Integer.MAX_VALUE / 2);
+                view.setData(getMonthOfDayList(dateArr[0], dateArr[1] + position - Integer.MAX_VALUE / 2), position == Integer.MAX_VALUE / 2, mIsSelectFirstDayOfMonth);
                 container.addView(view);
                 mViews.put(position, view);
 
@@ -120,10 +132,12 @@ public class CalendarDateView extends ViewPager implements CalendarTopView {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
 
-                if (mOnItemClickListener != null) {
+                if (mOnMonthChangedListener != null) {
                     CalendarView view = mViews.get(position);
                     Object[] obs = view.getSelect();
-                    mOnItemClickListener.onItemClick((View) obs[0], (int) obs[1], (CalendarDate) obs[2]);
+                    if (obs != null) {
+                        mOnMonthChangedListener.onMonthChanged((View) obs[0], (int) obs[1], (CalendarDate) obs[2]);
+                    }
                 }
 
                 mCaledarLayoutChangeListener.onLayoutChange(CalendarDateView.this);
@@ -198,5 +212,20 @@ public class CalendarDateView extends ViewPager implements CalendarTopView {
 
     public void next() {
         setCurrentItem(getCurrentItem() + 1);
+    }
+
+
+    /**
+     * 月份改变的监听
+     */
+    public interface OnMonthChangedListener {
+        /**
+         * 月份发生改变
+         *
+         * @param view
+         * @param postion
+         * @param date
+         */
+        void onMonthChanged(View view, int postion, CalendarDate date);
     }
 }

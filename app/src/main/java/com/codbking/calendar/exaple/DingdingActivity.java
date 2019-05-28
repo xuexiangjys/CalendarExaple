@@ -62,9 +62,9 @@ public class DingdingActivity extends AppCompatActivity {
             }
         });
 
-        mCalendarDateView.setOnItemClickListener(new CalendarView.OnItemClickListener() {
+        mCalendarDateView.setOnCalendarSelectedListener(new CalendarView.OnCalendarSelectedListener() {
             @Override
-            public void onItemClick(View view, int postion, CalendarDate bean) {
+            public void onCalendarSelected(View view, int postion, CalendarDate bean) {
                 mTitle.setText(bean.year + "/" + getDisPlayNumber(bean.month) + "/" + getDisPlayNumber(bean.day));
             }
         });

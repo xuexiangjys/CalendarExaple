@@ -2,6 +2,7 @@ package com.codbking.calendar;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,24 +20,49 @@ public class CalendarView extends ViewGroup {
 
     private CaledarAdapter mAdapter;
     private List<CalendarDate> mData;
-    private OnItemClickListener mOnItemClickListener;
+    private OnCalendarSelectedListener mOnCalendarSelectedListener;
 
     private int mRow = 6;
     private int mColumn = 7;
     private int mItemWidth;
     private int mItemHeight;
 
+    /**
+     * 是否是今天所在月
+     */
     private boolean mIsToday;
     private View mTodayView;
     private int mTodayPosition;
     private boolean mIsTodaySelected;
     private OnTodaySelectStatusChangedListener mOnTodaySelectStatusChangedListener;
 
-    public interface OnItemClickListener {
-        void onItemClick(View view, int postion, CalendarDate date);
+    private int mIndexOfFirstDayOfMonth = -1;
+
+
+    /**
+     * 日历选中的监听
+     */
+    public interface OnCalendarSelectedListener {
+        /**
+         * 选中日历
+         *
+         * @param view
+         * @param postion
+         * @param date
+         */
+        void onCalendarSelected(View view, int postion, CalendarDate date);
     }
 
+    /**
+     * 今日选中状态发生改变的监听
+     */
     public interface OnTodaySelectStatusChangedListener {
+        /**
+         * 状态发生变化
+         *
+         * @param todayView
+         * @param isSelected
+         */
         void onStatusChanged(View todayView, boolean isSelected);
     }
 
@@ -46,8 +72,8 @@ public class CalendarView extends ViewGroup {
         mRow = row;
     }
 
-    public CalendarView setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
+    public CalendarView setOnCalendarSelectedListener(OnCalendarSelectedListener onCalendarSelectedListener) {
+        mOnCalendarSelectedListener = onCalendarSelectedListener;
         return this;
     }
 
@@ -66,20 +92,21 @@ public class CalendarView extends ViewGroup {
     }
 
     public void setAdapter(CaledarAdapter adapter) {
-        this.mAdapter = adapter;
+        mAdapter = adapter;
     }
 
-    public void setData(List<CalendarDate> data, boolean isToday) {
+    public void setData(List<CalendarDate> data, boolean isToday, boolean isSelectFirstDayOfMonth) {
         mData = data;
         mIsToday = isToday;
-        setItem();
+        setItem(isSelectFirstDayOfMonth);
         requestLayout();
     }
 
-    private void setItem() {
+    private void setItem(boolean isSelectFirstDayOfMonth) {
         mSelectPosition = -1;
+        mIndexOfFirstDayOfMonth = -1;
         if (mAdapter == null) {
-            throw new RuntimeException("mAdapter is null,please setadapter");
+            throw new RuntimeException("mAdapter is null,please setAdapter");
         }
 
         for (int i = 0; i < mData.size(); i++) {
@@ -91,17 +118,25 @@ public class CalendarView extends ViewGroup {
                 addViewInLayout(chidView, i, chidView.getLayoutParams(), true);
             }
 
-            if (mIsToday && mSelectPosition == -1) {
-                int[] date = CalendarUtils.getYMD(new Date());
-                if (calendarDate.year == date[0] && calendarDate.month == date[1] && calendarDate.day == date[2]) {
-                    mSelectPosition = i;
-                    mTodayView = chidView;
-                    mTodayPosition = i;
-                    mIsTodaySelected = true;
-                }
-            } else {
-                if (mSelectPosition == -1 && calendarDate.day == 1) {
-                    mSelectPosition = i;
+            if (mIndexOfFirstDayOfMonth == -1 && calendarDate.day == 1) {
+                mIndexOfFirstDayOfMonth = i;
+            }
+
+            if (mSelectPosition == -1) {
+                if (mIsToday) {
+                    int[] date = CalendarUtils.getYMD(new Date());
+                    if (calendarDate.year == date[0] && calendarDate.month == date[1] && calendarDate.day == date[2]) {
+                        mSelectPosition = i;
+                        mTodayView = chidView;
+                        mTodayPosition = i;
+                        mIsTodaySelected = true;
+                    }
+                } else {
+                    if (isSelectFirstDayOfMonth) {
+                        if (calendarDate.day == 1) {
+                            mSelectPosition = i;
+                        }
+                    }
                 }
             }
 
@@ -112,8 +147,18 @@ public class CalendarView extends ViewGroup {
         }
     }
 
+    @Nullable
     public Object[] getSelect() {
-        return new Object[]{getChildAt(mSelectPosition), mSelectPosition, mData.get(mSelectPosition)};
+        return getSelect(mIndexOfFirstDayOfMonth);
+    }
+
+    @Nullable
+    public Object[] getSelect(int position) {
+        if (position > -1 && position < mData.size()) {
+            return new Object[]{getChildAt(position), position, mData.get(position)};
+        } else {
+            return null;
+        }
     }
 
     public void setItemClick(final View view, final int position, final CalendarDate bean) {
@@ -126,8 +171,8 @@ public class CalendarView extends ViewGroup {
                 }
                 mSelectPosition = position;
 
-                if (mOnItemClickListener != null) {
-                    mOnItemClickListener.onItemClick(view, position, bean);
+                if (mOnCalendarSelectedListener != null) {
+                    mOnCalendarSelectedListener.onCalendarSelected(view, position, bean);
                 }
 
                 if (mIsToday) {
@@ -150,22 +195,32 @@ public class CalendarView extends ViewGroup {
         });
     }
 
+    @Nullable
     public int[] getSelectRect() {
-        Rect rect = new Rect();
-        try {
-            getChildAt(mSelectPosition).getHitRect(rect);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (mSelectPosition > -1 && mSelectPosition < mData.size()) {
+            Rect rect = new Rect();
+            try {
+                getChildAt(mSelectPosition).getHitRect(rect);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return new int[]{rect.left, rect.top, rect.right, rect.top};
+        } else {
+            return null;
         }
-        return new int[]{rect.left, rect.top, rect.right, rect.top};
     }
 
     public int getSelectPostion() {
         return mSelectPosition;
     }
 
+    @Nullable
     public CalendarDate getSelectCalendarDate() {
-        return mData.get(mSelectPosition);
+        if (mSelectPosition > -1 && mSelectPosition < mData.size()) {
+            return mData.get(mSelectPosition);
+        } else {
+            return null;
+        }
     }
 
     @Override

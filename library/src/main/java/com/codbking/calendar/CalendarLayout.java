@@ -2,6 +2,7 @@ package com.codbking.calendar;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.support.annotation.Nullable;
 import android.support.v4.view.VelocityTrackerCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ScrollerCompat;
@@ -17,8 +18,6 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 
 /**
- *
- *
  * @author xuexiang
  * @since 2019/5/28 14:08
  */
@@ -97,6 +96,8 @@ public class CalendarLayout extends FrameLayout {
             case TYPE_OPEN:
                 mBottomViewTopHeight = mTopHeigth;
                 break;
+            default:
+                break;
         }
         if (mView2 != null) {
             mView2.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec) - mTopView.getItemHeight(), MeasureSpec.EXACTLY));
@@ -110,7 +111,7 @@ public class CalendarLayout extends FrameLayout {
             mView2.offsetTopAndBottom(mBottomViewTopHeight);
         }
         int[] selectRct = getCurrentSelectRect();
-        if (mType == TYPE_FOLD) {
+        if (mType == TYPE_FOLD && selectRct != null) {
             mView1.offsetTopAndBottom(-selectRct[1]);
         }
     }
@@ -304,6 +305,7 @@ public class CalendarLayout extends FrameLayout {
         }
     }
 
+    @Nullable
     private int[] getCurrentSelectRect() {
         return mTopView.getCurrentSelectRect();
     }
