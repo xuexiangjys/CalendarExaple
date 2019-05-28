@@ -41,7 +41,7 @@ public class DingdingActivity extends AppCompatActivity {
 
         mCalendarDateView.setAdapter(new CaledarAdapter() {
             @Override
-            public View getView(View convertView, ViewGroup parentView, CalendarDate bean) {
+            public View getView(View convertView, ViewGroup parentView, CalendarDate calendarDate) {
                 TextView view;
                 if (convertView == null) {
                     convertView = LayoutInflater.from(parentView.getContext()).inflate(R.layout.item_calendar, null);
@@ -51,8 +51,8 @@ public class DingdingActivity extends AppCompatActivity {
 
                 view = (TextView) convertView.findViewById(R.id.text);
 
-                view.setText("" + bean.day);
-                if (bean.monthFlag != 0) {
+                view.setText("" + calendarDate.day);
+                if (calendarDate.monthFlag != 0) {
                     view.setTextColor(0xff9299a1);
                 } else {
                     view.setTextColor(0xffffffff);

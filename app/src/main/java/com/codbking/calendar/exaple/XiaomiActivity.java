@@ -74,7 +74,7 @@ public class XiaomiActivity extends AppCompatActivity {
 
         mCalendarDateView.setAdapter(new CaledarAdapter() {
             @Override
-            public View getView(View convertView, ViewGroup parentView, CalendarDate bean) {
+            public View getView(View convertView, ViewGroup parentView, CalendarDate calendarDate) {
 
                 if (convertView == null) {
                     convertView = LayoutInflater.from(parentView.getContext()).inflate(R.layout.item_xiaomi, null);
@@ -83,13 +83,13 @@ public class XiaomiActivity extends AppCompatActivity {
                 TextView chinaText = (TextView) convertView.findViewById(R.id.chinaText);
                 TextView text = (TextView) convertView.findViewById(R.id.text);
 
-                text.setText("" + bean.day);
-                if (bean.monthFlag != 0) {
+                text.setText("" + calendarDate.day);
+                if (calendarDate.monthFlag != 0) {
                     text.setTextColor(0xff9299a1);
                 } else {
                     text.setTextColor(0xff444444);
                 }
-                chinaText.setText(bean.chinaDay);
+                chinaText.setText(calendarDate.chinaDay);
 
                 return convertView;
             }

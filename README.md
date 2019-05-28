@@ -50,7 +50,7 @@ csdn: [http://my.csdn.net/codbking](http://my.csdn.net/codbking)
  -  **Add the dependency**
 ```sh
 	dependencies {
-	        compile 'com.github.codbking:CalendarExaple:v1.0.0'
+	        compile 'com.github.xuexiangjys:CalendarExaple:1.0.1'
 	}
 ```
 
@@ -58,61 +58,80 @@ csdn: [http://my.csdn.net/codbking](http://my.csdn.net/codbking)
 
   注意：CalendarDateView一定是CalendarLayout第一个view，扩展view必须是CalendarDateView第二个view
 ```xml
-   <com.codbking.calendar.CalendarLayout
+<com.codbking.calendar.CalendarLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    >
+
+    <com.codbking.calendar.CalendarDateView
+        android:id="@+id/calendarDateView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        >
+        android:layout_height="wrap_content"/>
 
-        <com.codbking.calendar.CalendarDateView
-            android:id="@+id/calendarDateView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        />
 
-        <ListView
-            android:id="@+id/list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#ffffff"
-            />
-
-    </com.codbking.calendar.CalendarLayout>
+</com.codbking.calendar.CalendarLayout>
 ```
 
 - 在你的java文件中设置CalendarDateView的CaledarAdapter和CalendarView.OnItemClickListener监听
 
    注意：想要设置选中效果，只需设置CaledarAdapter中的view的选中背景
 ```java
-       mCalendarDateView.setAdapter(new CaledarAdapter() {
-            @Override
-            public View getView(View convertView, ViewGroup parentView, CalendarBean bean) {
-                //判断convertView为null，可以有效利用view的回收重用，左右滑动的效率高
-                if (convertView == null) {
-                    convertView = LayoutInflater.from(parentView.getContext()).inflate(R.layout.item_xiaomi, null);
-                }
+mCalendarDateView.setAdapter(new CaledarAdapter() {
+    @Override
+    public View getView(View convertView, ViewGroup parentView, CalendarDate calendarDate) {
 
-                TextView chinaText = (TextView) convertView.findViewById(R.id.chinaText);
-                TextView text = (TextView) convertView.findViewById(R.id.text);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(parentView.getContext()).inflate(R.layout.item_xiaomi, null);
+        }
 
-                text.setText("" + bean.day);
-                //mothFlag 0是当月，-1是月前，1是月后
-                if (bean.mothFlag != 0) {
-                    text.setTextColor(0xff9299a1);
-                } else {
-                    text.setTextColor(0xff444444);
-                }
-                chinaText.setText(bean.chinaDay);
+        TextView chinaText = (TextView) convertView.findViewById(R.id.chinaText);
+        TextView text = (TextView) convertView.findViewById(R.id.text);
 
-                return convertView;
-            }
-        });
+        text.setText("" + calendarDate.day);
+        if (calendarDate.monthFlag != 0) {
+            text.setTextColor(0xff9299a1);
+        } else {
+            text.setTextColor(0xff444444);
+        }
+        chinaText.setText(calendarDate.chinaDay);
 
-        mCalendarDateView.setOnItemClickListener(new CalendarView.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int postion, CalendarBean bean) {
-                mTitle.setText(bean.year + "/" + bean.month + "/" + bean.day);
-            }
-        });
+        return convertView;
+    }
+});
+
+mCalendarDateView.setOnCalendarSelectedListener(new CalendarView.OnCalendarSelectedListener() {
+    @Override
+    public void onCalendarSelected(View view, int postion, CalendarDate bean) {
+        mTitle.setText(bean.year + "/" + bean.month + "/" + bean.day);
+    }
+});
+
+mCalendarDateView.setOnTodaySelectStatusChangedListener(new CalendarView.OnTodaySelectStatusChangedListener() {
+    @Override
+    public void onStatusChanged(View todayView, boolean isSelected) {
+        TextView view = todayView.findViewById(R.id.text);
+        if (isSelected) {
+            view.setTextColor(Color.parseColor("#3B4664"));
+        } else {
+            view.setTextColor(Color.parseColor("#FF9900"));
+        }
+    }
+});
+
+mCalendarDateView.setOnMonthChangedListener(new CalendarDateView.OnMonthChangedListener() {
+    @Override
+    public void onMonthChanged(View view, int postion, CalendarDate date) {
+        mTitle.setText(String.format("%d年%d月", date.year, date.month));
+
+    }
+});
 ```
 
 ### 联系我
