@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    tools:context="com.codbking.calendar.exaple.DingdingActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            app:srcCompat="@drawable/ic_action_previous"/>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="2016/10/10"
+            android:textColor="#3B4664" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            app:srcCompat="@drawable/ic_action_next"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/TextStyle"
+            android:text="日" />
+
+        <TextView
+            style="@style/TextStyle"
+            android:text="一" />
+
+        <TextView
+            style="@style/TextStyle"
+            android:text="二" />
+
+        <TextView
+            style="@style/TextStyle"
+            android:text="三" />
+
+        <TextView
+            style="@style/TextStyle"
+            android:text="四" />
+
+        <TextView
+            style="@style/TextStyle"
+            android:text="五" />
+
+        <TextView
+            style="@style/TextStyle"
+            android:text="六" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F1F1F1"/>
+
+    <com.codbking.calendar.CalendarLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <com.codbking.calendar.CalendarDateView
+            android:id="@+id/calendarDateView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.codbking.calendar.CalendarLayout>
+
+
+</LinearLayout>

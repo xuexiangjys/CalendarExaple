@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.codbking.calendar.exaple">
+    package="com.codbking.calendar.exaple">
 
     <application
         android:allowBackup="true"
@@ -10,24 +10,22 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".DingdingActivity"
-            android:theme="@style/AppNotitleTheme"
-            >
-        </activity>
+            android:theme="@style/AppNotitleTheme"></activity>
         <activity
             android:name=".XiaomiActivity"
-            android:theme="@style/AppNotitleTheme"
-            >
-        </activity>
+            android:theme="@style/AppNotitleTheme"></activity>
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme"
-            >
+            android:theme="@style/AppTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".CustomActivity"
+            android:theme="@style/AppNotitleTheme" />
     </application>
 
 </manifest>

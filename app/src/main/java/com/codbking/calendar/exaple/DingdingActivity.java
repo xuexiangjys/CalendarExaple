@@ -10,9 +10,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.codbking.calendar.CaledarAdapter;
-import com.codbking.calendar.CalendarBean;
+import com.codbking.calendar.CalendarDate;
 import com.codbking.calendar.CalendarDateView;
-import com.codbking.calendar.CalendarUtil;
+import com.codbking.calendar.CalendarUtils;
 import com.codbking.calendar.CalendarView;
 
 import java.util.Date;
@@ -41,7 +41,7 @@ public class DingdingActivity extends AppCompatActivity {
 
         mCalendarDateView.setAdapter(new CaledarAdapter() {
             @Override
-            public View getView(View convertView, ViewGroup parentView, CalendarBean bean) {
+            public View getView(View convertView, ViewGroup parentView, CalendarDate bean) {
                 TextView view;
                 if (convertView == null) {
                     convertView = LayoutInflater.from(parentView.getContext()).inflate(R.layout.item_calendar, null);
@@ -52,7 +52,7 @@ public class DingdingActivity extends AppCompatActivity {
                 view = (TextView) convertView.findViewById(R.id.text);
 
                 view.setText("" + bean.day);
-                if (bean.mothFlag != 0) {
+                if (bean.monthFlag != 0) {
                     view.setTextColor(0xff9299a1);
                 } else {
                     view.setTextColor(0xffffffff);
@@ -64,12 +64,12 @@ public class DingdingActivity extends AppCompatActivity {
 
         mCalendarDateView.setOnItemClickListener(new CalendarView.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int postion, CalendarBean bean) {
-                mTitle.setText(bean.year + "/" + getDisPlayNumber(bean.moth) + "/" + getDisPlayNumber(bean.day));
+            public void onItemClick(View view, int postion, CalendarDate bean) {
+                mTitle.setText(bean.year + "/" + getDisPlayNumber(bean.month) + "/" + getDisPlayNumber(bean.day));
             }
         });
 
-        int[] data = CalendarUtil.getYMD(new Date());
+        int[] data = CalendarUtils.getYMD(new Date());
         mTitle.setText(data[0] + "/" + data[1] + "/" + data[2]);
 
         mList.setAdapter(new BaseAdapter() {

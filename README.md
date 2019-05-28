@@ -110,7 +110,7 @@ csdn: [http://my.csdn.net/codbking](http://my.csdn.net/codbking)
         mCalendarDateView.setOnItemClickListener(new CalendarView.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int postion, CalendarBean bean) {
-                mTitle.setText(bean.year + "/" + bean.moth + "/" + bean.day);
+                mTitle.setText(bean.year + "/" + bean.month + "/" + bean.day);
             }
         });
 ```
